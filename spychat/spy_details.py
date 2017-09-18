@@ -12,7 +12,7 @@ friends = [
         'name': 'Bob',
         'saultation': 'Mr.',
         'rating': 4.2,
-        'age': 21,
+        'age': 22,
         'chats': []
     },
     {
