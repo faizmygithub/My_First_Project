@@ -1,4 +1,4 @@
-from spy_details import spy, friends
+from spy_details import spy, Spy,ChatMessage, friends
 from steganography.steganography import Steganography
 from datetime import datetime
 
@@ -60,24 +60,20 @@ def add_status(current_status_message):
 
 
 def add_friend():
+  new_friend = Spy('', '', 0, 0.0)
 
-    new_friend = {
-        'name': '',
-        'salutation': '',
-        'age': 0,
-        'rating': 0.0,
-        'chats': []
-    }
-    new_friend['name'] = raw_input("Please add your friend's name: ")
-    new_friend['salutation'] = raw_input("Are they Mr. or Ms.?: ")
+  new_friend.name = raw_input("Please add your friend's name: ")
+  new_friend.salutation = raw_input("Are they Mr. or Ms.?: ")
 
-    new_friend['name'] = new_friend['salutation'] + " " + new_friend['name']
+  new_friend.name = new_friend.salutation + " " + new_friend.name
 
-    new_friend['age'] = raw_input("Age?")
-    new_friend['age'] = int(new_friend['age'])
+  new_friend.age = raw_input("Age?")
+  new_friend.age = int(new_friend.age)
 
-    new_friend['rating'] = raw_input("Spy rating?")
-    new_friend['rating'] = float(new_friend['rating'])
+  new_friend.rating = raw_input("Spy rating?")
+  new_friend.rating = float(new_friend.rating)
+
+
 
 
     if len(new_friend['name']) > 0 and new_friend['age'] > 12 and new_friend['rating'] >= spy['rating']:
@@ -113,11 +109,7 @@ def send_message():
     text = raw_input("What do you want to say? ")
     Steganography.encode(original_image, output_path, text)
 
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "sent_by_me": True
-    }
+    new_chat = ChatMessage(text,True)
 
     friends[friend_choice]['chats'].append(new_chat)
 
@@ -132,23 +124,27 @@ def read_message():
 
     secret_text = Steganography.decode(output_path)
 
-    new_chat = {
-        "message": secret_text,
-        "time": datetime.now(),
-        "sent_by_me": False
-    }
+    new_chat = ChatMessage(secret_text, False)
 
     friends[sender]['chats'].append(new_chat)
 
     print "Your secret message has been saved!"
 
-def start_chat(spy_name, spy_age, spy_rating):
+    def read_chat_history():
+
+      read_for = select_a_friend()
+
+      print '\n6'
+
+      for chat in friends[read_for].chats:
+        if chat.sent_by_me:
+          print '[%s] %s: %s' % (chat.time.strftime("%d %B %Y"), 'You said:', chat.message)
+        else:
+          print '[%s] %s said: %s' % (chat.time.strftime("%d %B %Y"), friends[read_for].name, chat.message)
 
 
-    current_status_message = None
-
-
-    spy_name = spy['salutation'] + " " + spy['name']
+def start_chat(spy):
+  spy.name-spy.salutation + " " +spy.name
 
 
     if spy_age > 12 and spy_age < 50:
@@ -185,23 +181,19 @@ if existing == "Y":
     start_chat(spy['name'],spy['age'], spy['rating'])
 else:
 
-    spy = {
-        'name': '',
-        'salutation': '',
-        'age': 0,
-        'rating': 0.0,
-        'is_online': False
-    }
+  spy = Spy('', '', 0, 0.0)
 
-    spy['name'] = raw_input("Welcome to spy chat, you must tell me your spy name first: ")
-    spy['salutation'] = raw_input("Should I call you Mr. or Ms.?: ")
+  spy.name = raw_input("Welcome to spy chat, HEY, what's your name ")
 
-    spy['age'] = raw_input("What is your age?")
-    spy['age'] = int(spy['age'])
+  if len(spy.name) > 0:
+    spy.salutation = raw_input("What should I call you Mr. or Ms.?: ")
 
-    spy['rating'] = raw_input("What is your spy rating?")
-    spy['rating'] = float(spy['rating'])
+    spy.age = raw_input("What is your age?")
+    spy.age = int(spy.age)
 
-    spy_is_online = True
+    spy.rating = raw_input("Spy rating?")
+    spy.rating = float(spy.rating)
 
-    start_chat(spy['name'], spy['age'], spy['rating'])
+    start_chat(spy)
+  else:
+    print 'Please add a valid spy name'
